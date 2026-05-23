@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maxwell Tech Studio — Tools for focused people</title>
+  <meta name="description" content="Indie software from Maxwell Tech Studio. Built by a medical student, for people who do deep, hard work.">
+  <meta property="og:title" content="Maxwell Tech Studio">
+  <meta property="og:description" content="Indie software built for focused, deep work.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://maxwelltechstudio.com">
+  <link rel="canonical" href="https://maxwelltechstudio.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+
+    /* ── Tokens ── */
+    :root {
+      --bg:       #090909;
+      --surface:  #111111;
+      --surface2: #161616;
+      --border:   rgba(255,255,255,0.07);
+      --border-h: rgba(255,255,255,0.14);
+      --text:     #f0f0f0;
+      --muted:    #6b6b6b;
+      --muted2:   #444;
+      --accent:   #e8e8e8;
+      --green:    #22c55e;
+      --radius:   10px;
+      --font:     'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px;
+      display: flex; align-items: center;
+      padding: 0 24px;
+      background: rgba(9,9,9,0.85);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 15px; font-weight: 600; letter-spacing: -0.3px;
+    }
+    .nav-logo-mark {
+      width: 28px; height: 28px; border-radius: 7px;
+      background: linear-gradient(135deg, #fff 0%, #888 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: #000;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 6px; margin-left: auto;
+    }
+    .nav-link {
+      font-size: 13px; color: var(--muted); padding: 6px 12px; border-radius: 6px;
+      transition: color .15s, background .15s;
+    }
+    .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+    .nav-cta {
+      font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: 7px;
+      background: #fff; color: #000;
+      transition: opacity .15s, transform .15s;
+    }
+    .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 160px 24px 100px;
+      text-align: center;
+      max-width: 780px; margin: 0 auto;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 12px; color: var(--muted);
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 5px 13px; border-radius: 99px;
+      margin-bottom: 32px; letter-spacing: 0.3px;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -2px;
+      color: #fff;
+      margin-bottom: 22px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, #fff 30%, #555 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 17px; color: var(--muted); line-height: 1.6;
+      max-width: 520px; margin: 0 auto 44px;
+      font-weight: 400;
+    }
+    .hero-actions {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    }
+    .btn-primary {
+      padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600;
+      background: #fff; color: #000;
+      transition: opacity .15s, transform .15s;
+      display: inline-flex; align-items: center; gap: 7px;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-secondary {
+      padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 500;
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--border);
+      transition: all .15s;
+      display: inline-flex; align-items: center; gap: 7px;
+    }
+    .btn-secondary:hover { border-color: var(--border-h); color: var(--text); background: var(--surface); }
+
+    /* Gradient glow behind hero */
+    .hero-glow {
+      position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%);
+      width: 600px; height: 300px; pointer-events: none;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.04) 0%, transparent 70%);
+      filter: blur(40px);
+    }
+
+    /* ── Section ── */
+    section { padding: 80px 24px; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(22px, 3vw, 32px); font-weight: 700;
+      letter-spacing: -0.8px; color: #fff; margin-bottom: 8px;
+    }
+    .section-sub {
+      font-size: 15px; color: var(--muted); line-height: 1.6; max-width: 480px;
+    }
+
+    /* ── Filters ── */
+    .filter-row {
+      display: flex; gap: 6px; margin-bottom: 36px; flex-wrap: wrap;
+    }
+    .filter-btn {
+      font-size: 13px; font-weight: 500; padding: 6px 14px; border-radius: 99px;
+      border: 1px solid var(--border); color: var(--muted);
+      transition: all .15s;
+    }
+    .filter-btn:hover { border-color: var(--border-h); color: var(--text); }
+    .filter-btn.active {
+      background: #fff; color: #000; border-color: #fff;
+    }
+
+    /* ── Product grid ── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── Product card ── */
+    .product-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex; flex-direction: column; gap: 16px;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      position: relative; overflow: hidden;
+    }
+    .product-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+    }
+    .product-card:hover {
+      border-color: var(--border-h);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.5);
+    }
+    .product-card.coming-soon {
+      opacity: .45; pointer-events: none;
+    }
+
+    /* card header */
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .card-icon {
+      width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; border: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 99px;
+      border: 1px solid var(--border); color: var(--muted); letter-spacing: 0.3px;
+    }
+    .tag.anki    { border-color: rgba(255,140,0,.3); color: rgba(255,140,0,.8); }
+    .tag.new     { border-color: rgba(34,197,94,.3); color: rgba(34,197,94,.9); }
+    .tag.soon    { border-color: var(--border); color: var(--muted2); }
+
+    /* card body */
+    .card-name {
+      font-size: 17px; font-weight: 600; letter-spacing: -0.3px; color: #fff;
+      line-height: 1.3;
+    }
+    .card-desc {
+      font-size: 13px; color: var(--muted); line-height: 1.6;
+    }
+
+    /* feature chips */
+    .card-features {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .feature-chip {
+      font-size: 11px; color: var(--muted); background: var(--surface2);
+      border: 1px solid var(--border); padding: 3px 9px; border-radius: 5px;
+    }
+
+    /* card footer */
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 16px; border-top: 1px solid var(--border);
+      gap: 12px;
+    }
+    .card-price { display: flex; flex-direction: column; gap: 1px; }
+    .price-main { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+    .price-sub  { font-size: 11px; color: var(--muted); }
+    .card-cta {
+      font-size: 13px; font-weight: 600; padding: 9px 18px;
+      border-radius: 7px; background: #fff; color: #000;
+      transition: opacity .15s, transform .15s; white-space: nowrap;
+    }
+    .card-cta:hover { opacity: 0.86; transform: translateY(-1px); }
+    .card-cta.outline {
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Divider ── */
+    .divider {
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 auto;
+    }
+
+    /* ── How it works ── */
+    .steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;
+      margin-top: 40px;
+    }
+    .step {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; position: relative;
+    }
+    .step-num {
+      font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 12px;
+    }
+    .step-title { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+    .step-desc  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── FAQ ── */
+    .faq { margin-top: 40px; display: flex; flex-direction: column; gap: 2px; }
+    .faq-item {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .faq-item + .faq-item { margin-top: 2px; }
+    .faq-q {
+      width: 100%; text-align: left; padding: 18px 20px;
+      font-size: 14px; font-weight: 500; color: var(--text);
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; background: var(--surface);
+      transition: background .15s;
+    }
+    .faq-q:hover { background: var(--surface2); }
+    .faq-q .chevron { font-size: 12px; color: var(--muted); transition: transform .2s; }
+    .faq-item.open .chevron { transform: rotate(180deg); }
+    .faq-a {
+      font-size: 13px; color: var(--muted); line-height: 1.7;
+      max-height: 0; overflow: hidden; transition: max-height .25s ease, padding .2s;
+      padding: 0 20px; background: var(--surface);
+    }
+    .faq-item.open .faq-a { max-height: 200px; padding: 0 20px 18px; }
+
+    /* ── Footer ── */
+    footer {
+      padding: 48px 24px;
+      border-top: 1px solid var(--border);
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      font-size: 14px; font-weight: 600; color: var(--muted);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .footer-logo-mark {
+      width: 22px; height: 22px; border-radius: 5px;
+      background: linear-gradient(135deg, #fff 0%, #666 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800; color: #000;
+    }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-link  { font-size: 13px; color: var(--muted); transition: color .15s; }
+    .footer-link:hover { color: var(--text); }
+    .footer-copy  { font-size: 12px; color: var(--muted2); }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      nav { padding: 0 16px; }
+      .nav-links .nav-link { display: none; }
+      section { padding: 60px 16px; }
+      footer { flex-direction: column; align-items: flex-start; gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ─────────────────────────────────────────────────── -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-mark">M</div>
+    Maxwell Tech Studio
+  </a>
+  <div class="nav-links">
+    <a href="#products" class="nav-link">Products</a>
+    <a href="#how-it-works" class="nav-link">How it works</a>
+    <a href="mailto:hello@maxwelltechstudio.com" class="nav-link">Contact</a>
+    <!-- replace # with your LS store URL when ready -->
+    <a href="#products" class="nav-cta">Browse products</a>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">
+    <span class="hero-badge-dot"></span>
+    Indie software · Built by a medical student
+  </div>
+  <h1>Tools built for people<br>who do <em>hard things.</em></h1>
+  <p class="hero-sub">
+    Software for focused, deep work — built because I needed it myself
+    and nothing else was good enough.
+  </p>
+  <div class="hero-actions">
+    <a href="#products" class="btn-primary">
+      <span>Browse products</span>
+      <span>↓</span>
+    </a>
+    <a href="mailto:hello@maxwelltechstudio.com" class="btn-secondary">
+      <span>Get in touch</span>
+    </a>
+  </div>
+</div>
+
+<!-- ── Products ──────────────────────────────────────────────── -->
+<section id="products">
+  <div class="section-label">Products</div>
+  <div class="section-title">Everything I've shipped</div>
+  <p class="section-sub">Each tool is something I use daily. If I wouldn't use it, I don't build it.</p>
+
+  <!-- Filters -->
+  <div class="filter-row" style="margin-top:28px">
+    <button class="filter-btn active" onclick="filterProducts('all', this)">All</button>
+    <button class="filter-btn" onclick="filterProducts('anki', this)">Anki</button>
+    <button class="filter-btn" onclick="filterProducts('productivity', this)">Productivity</button>
+    <button class="filter-btn" onclick="filterProducts('health', this)">Health</button>
+  </div>
+
+  <div class="product-grid" id="product-grid">
+
+    <!-- ── Product 1: Anime Power Level ── -->
+    <div class="product-card" data-category="anki">
+      <div class="card-top">
+        <div class="card-icon">⚡</div>
+        <div class="card-tags">
+          <span class="tag anki">Anki</span>
+          <span class="tag new">New</span>
+        </div>
+      </div>
+      <div>
+        <div class="card-name">Anime Power Level for Anki</div>
+        <div class="card-desc" style="margin-top:6px">
+          Transform your Anki reviews into an anime RPG. Earn XP, level up through
+          7 character forms, fight boss battles, and track your power level —
+          across DBZ, Bleach, HxH, and Naruto universes.
+        </div>
+      </div>
+      <div class="card-features">
+        <span class="feature-chip">4 anime universes</span>
+        <span class="feature-chip">Boss fights</span>
+        <span class="feature-chip">Combo multiplier</span>
+        <span class="feature-chip">Character art</span>
+        <span class="feature-chip">AnkiWeb sync</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">
+          <span class="price-main">$5<span style="font-size:13px;font-weight:400;color:var(--muted)">/mo</span></span>
+          <span class="price-sub">or $100 lifetime · free tier available</span>
+        </div>
+        <!-- Replace href with your actual Lemon Squeezy product URL -->
+        <a href="https://maxwelltechstudio.com/products/anime-power-level.html" class="card-cta">Get it →</a>
+      </div>
+    </div>
+
+    <!-- ── Placeholder 2 ── -->
+    <div class="product-card coming-soon" data-category="productivity">
+      <div class="card-top">
+        <div class="card-icon">🧠</div>
+        <div class="card-tags"><span class="tag soon">Coming soon</span></div>
+      </div>
+      <div>
+        <div class="card-name">Something for productivity</div>
+        <div class="card-desc" style="margin-top:6px">
+          In development. Join the mailing list to be notified when it launches.
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">
+          <span class="price-main" style="font-size:14px;color:var(--muted)">TBA</span>
+        </div>
+        <span class="card-cta outline">Notify me</span>
+      </div>
+    </div>
+
+    <!-- ── Placeholder 3 ── -->
+    <div class="product-card coming-soon" data-category="health">
+      <div class="card-top">
+        <div class="card-icon">💊</div>
+        <div class="card-tags"><span class="tag soon">Coming soon</span></div>
+      </div>
+      <div>
+        <div class="card-name">Something for med students</div>
+        <div class="card-desc" style="margin-top:6px">
+          Built for the grind of medical school. Details coming soon.
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">
+          <span class="price-main" style="font-size:14px;color:var(--muted)">TBA</span>
+        </div>
+        <span class="card-cta outline">Notify me</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider" style="max-width:1100px;margin:0 auto"></div>
+
+<!-- ── How it works ──────────────────────────────────────────── -->
+<section id="how-it-works">
+  <div class="section-label">How it works</div>
+  <div class="section-title">Buying is simple</div>
+  <p class="section-sub">No accounts required to browse. Pay once, get a license key instantly.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">Step 01</div>
+      <div class="step-title">Choose a plan</div>
+      <div class="step-desc">Monthly or lifetime — pick what makes sense. Free tier available to try before you buy.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">Step 02</div>
+      <div class="step-title">Pay securely</div>
+      <div class="step-desc">Stripe-powered checkout. All major cards, Apple Pay, and Google Pay accepted.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">Step 03</div>
+      <div class="step-title">Get your key</div>
+      <div class="step-desc">A license key lands in your inbox immediately. Paste it into the add-on and you're live.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">Step 04</div>
+      <div class="step-title">Manage anytime</div>
+      <div class="step-desc">Cancel, upgrade, or switch plans from your email — no login required.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider" style="max-width:1100px;margin:0 auto"></div>
+
+<!-- ── FAQ ───────────────────────────────────────────────────── -->
+<section id="faq" style="max-width:680px">
+  <div class="section-label">FAQ</div>
+  <div class="section-title">Common questions</div>
+  <div class="faq" style="margin-top:32px">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Does the free tier actually work, or is it crippled?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-a">
+        The free tier is fully functional for basic use — the DBZ theme, E and D rank progression,
+        and the XP system all work. Premium unlocks the full experience: all 4 universes,
+        all 7 character forms with real artwork, boss fights, and the combo multiplier.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Does it work across devices?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-a">
+        Your license activates on up to 3 devices. Progress (XP, level, power level)
+        is saved per-device for now — cloud sync across devices is planned for a future update.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What version of Anki does this support?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-a">
+        Anki 23.10 and above (the current release line). Tested on Windows and macOS.
+        Linux should work but isn't formally tested yet.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Can I get a refund?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-a">
+        Yes — 7-day no-questions-asked refund on both plans. Email me directly:
+        hello@maxwelltechstudio.com and I'll process it same day.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Is the lifetime deal actually lifetime?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-a">
+        Yes. One payment, all future updates included, forever.
+        If I ever shut down (I won't), I'll open-source the add-on first.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ─────────────────────────────────────────────────── -->
+<div class="divider" style="max-width:1100px;margin:0 auto"></div>
+<footer>
+  <div class="footer-logo">
+    <div class="footer-logo-mark">M</div>
+    Maxwell Tech Studio
+  </div>
+  <div class="footer-links">
+    <a href="#products" class="footer-link">Products</a>
+    <a href="#faq" class="footer-link">FAQ</a>
+    <a href="mailto:hello@maxwelltechstudio.com" class="footer-link">Contact</a>
+    <!-- <a href="https://twitter.com/yourhandle" class="footer-link">Twitter</a> -->
+  </div>
+  <div class="footer-copy">© 2025 Maxwell Tech Studio. All rights reserved.</div>
+</footer>
+
+<script>
+  /* ── Product filtering ── */
+  function filterProducts(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.product-card').forEach(card => {
+      const match = cat === 'all' || card.dataset.category === cat;
+      card.style.display = match ? '' : 'none';
+    });
+  }
+
+  /* ── FAQ toggle ── */
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+</script>
+</body>
+</html>

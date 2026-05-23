@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Power Level for Anki — Maxwell Tech Studio</title>
+  <meta name="description" content="Transform your Anki reviews into an anime RPG. DBZ, Bleach, HxH, Naruto themes. XP system, boss fights, character progression.">
+  <meta property="og:url" content="https://maxwelltechstudio.com/products/anime-power-level.html">
+  <link rel="canonical" href="https://maxwelltechstudio.com/products/anime-power-level.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg:#090909; --surface:#111; --surface2:#161616;
+      --border:rgba(255,255,255,0.07); --border-h:rgba(255,255,255,0.14);
+      --text:#f0f0f0; --muted:#6b6b6b; --muted2:#444;
+      --green:#22c55e; --radius:10px; --font:'Inter',-apple-system,sans-serif;
+    }
+    body { font-family:var(--font); background:var(--bg); color:var(--text);
+      min-height:100vh; -webkit-font-smoothing:antialiased; }
+    a { color:inherit; text-decoration:none; }
+
+    /* Nav */
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; height:60px;
+      display:flex; align-items:center; padding:0 24px;
+      background:rgba(9,9,9,0.85); border-bottom:1px solid var(--border);
+      backdrop-filter:blur(20px); }
+    .nav-logo { display:flex; align-items:center; gap:10px;
+      font-size:15px; font-weight:600; }
+    .nav-logo-mark { width:28px; height:28px; border-radius:7px;
+      background:linear-gradient(135deg,#fff,#888); display:flex;
+      align-items:center; justify-content:center; font-size:13px; font-weight:800; color:#000; }
+    .back-link { margin-left:auto; font-size:13px; color:var(--muted);
+      padding:6px 12px; border-radius:6px; transition:all .15s; }
+    .back-link:hover { color:var(--text); background:rgba(255,255,255,.05); }
+
+    /* Page layout */
+    .page { max-width:960px; margin:0 auto; padding:100px 24px 80px; }
+
+    /* Breadcrumb */
+    .breadcrumb { font-size:12px; color:var(--muted); margin-bottom:32px; }
+    .breadcrumb a:hover { color:var(--text); }
+
+    /* Product hero */
+    .product-hero { display:grid; grid-template-columns:1fr 340px; gap:48px; align-items:start; }
+    @media(max-width:720px) { .product-hero { grid-template-columns:1fr; } }
+
+    .product-left {}
+    .product-badge {
+      display:inline-flex; align-items:center; gap:7px;
+      font-size:11px; color:var(--muted);
+      background:var(--surface); border:1px solid var(--border);
+      padding:4px 12px; border-radius:99px; margin-bottom:20px; letter-spacing:.3px;
+    }
+    .product-title { font-size:clamp(28px,4vw,44px); font-weight:700;
+      letter-spacing:-1.5px; color:#fff; line-height:1.1; margin-bottom:16px; }
+    .product-tagline { font-size:16px; color:var(--muted); line-height:1.65; margin-bottom:28px; }
+    .product-tags { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px; }
+    .ptag { font-size:12px; padding:4px 11px; border-radius:99px;
+      border:1px solid var(--border); color:var(--muted); }
+
+    /* Feature list */
+    .features-title { font-size:13px; font-weight:600; color:var(--muted);
+      text-transform:uppercase; letter-spacing:1.5px; margin-bottom:16px; }
+    .feature-list { display:flex; flex-direction:column; gap:10px; }
+    .feature-row { display:flex; align-items:flex-start; gap:12px; }
+    .feature-check { color:var(--green); font-size:14px; margin-top:1px; flex-shrink:0; }
+    .feature-text { font-size:14px; color:var(--text); line-height:1.5; }
+    .feature-text small { color:var(--muted); }
+
+    /* Pricing card (sticky) */
+    .pricing-card {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:14px; padding:28px; position:sticky; top:80px;
+    }
+    .pricing-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px;
+      border-radius:14px 14px 0 0;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent); }
+    .pricing-header { margin-bottom:24px; }
+    .pricing-label { font-size:11px; font-weight:600; text-transform:uppercase;
+      letter-spacing:1.5px; color:var(--muted); margin-bottom:8px; }
+
+    /* Plan tabs */
+    .plan-tabs { display:flex; gap:4px; background:var(--surface2);
+      padding:4px; border-radius:8px; margin-bottom:20px; }
+    .plan-tab { flex:1; padding:8px; border-radius:6px; text-align:center;
+      font-size:13px; font-weight:500; color:var(--muted); cursor:pointer;
+      transition:all .15s; }
+    .plan-tab.active { background:#fff; color:#000; }
+
+    /* Plan details */
+    .plan-detail { display:none; }
+    .plan-detail.active { display:block; }
+    .plan-price { font-size:42px; font-weight:700; color:#fff; letter-spacing:-2px;
+      display:flex; align-items:baseline; gap:4px; }
+    .plan-price-unit { font-size:16px; font-weight:400; color:var(--muted); }
+    .plan-note { font-size:12px; color:var(--muted); margin-top:6px; margin-bottom:20px; }
+
+    .btn-checkout {
+      display:block; width:100%; padding:14px;
+      font-size:15px; font-weight:600; text-align:center;
+      background:#fff; color:#000; border-radius:8px; border:none;
+      cursor:pointer; transition:opacity .15s, transform .15s; margin-bottom:12px;
+    }
+    .btn-checkout:hover { opacity:.88; transform:translateY(-1px); }
+    .btn-checkout.outline {
+      background:transparent; color:var(--muted);
+      border:1px solid var(--border); font-size:13px; padding:11px;
+    }
+    .btn-checkout.outline:hover { border-color:var(--border-h); color:var(--text); }
+
+    .pricing-trust { display:flex; flex-direction:column; gap:6px; margin-top:16px; }
+    .trust-row { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); }
+    .trust-icon { font-size:12px; }
+
+    /* Free vs Premium table */
+    .compare { margin-top:64px; }
+    .compare-title { font-size:22px; font-weight:700; letter-spacing:-.5px;
+      margin-bottom:24px; color:#fff; }
+    .compare-table { width:100%; border-collapse:collapse; }
+    .compare-table th, .compare-table td {
+      padding:13px 16px; text-align:left; border-bottom:1px solid var(--border);
+      font-size:13px;
+    }
+    .compare-table th { color:var(--muted); font-weight:600; font-size:11px;
+      text-transform:uppercase; letter-spacing:1px; }
+    .compare-table td:first-child { color:var(--text); }
+    .compare-table td:not(:first-child) { text-align:center; }
+    .compare-table tr:last-child td { border-bottom:none; }
+    .yes { color:var(--green); } .no { color:var(--muted2); }
+
+    /* Screenshots / preview section */
+    .preview-section { margin-top:64px; }
+    .preview-label { font-size:11px; font-weight:600; text-transform:uppercase;
+      letter-spacing:2px; color:var(--muted); margin-bottom:16px; }
+    .preview-desc { font-size:15px; color:var(--muted); line-height:1.6; max-width:560px; }
+    .preview-themes { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:24px; }
+    .theme-swatch {
+      border-radius:8px; padding:16px 12px; text-align:center;
+      border:1px solid rgba(255,255,255,.06); font-size:12px; font-weight:600;
+    }
+    .t-dbz    { background:rgba(255,102,0,.1);   color:rgba(255,140,0,.9);  border-color:rgba(255,102,0,.25); }
+    .t-bleach { background:rgba(68,136,255,.1);   color:rgba(100,160,255,.9);border-color:rgba(68,136,255,.25); }
+    .t-hxh    { background:rgba(60,220,100,.1);   color:rgba(80,220,100,.9); border-color:rgba(60,220,100,.25); }
+    .t-naruto { background:rgba(255,140,0,.08);   color:rgba(255,180,50,.9); border-color:rgba(255,140,0,.2); }
+    .theme-swatch .sw-icon { font-size:20px; display:block; margin-bottom:6px; }
+
+    /* Footer */
+    .page-footer { margin-top:80px; padding-top:32px; border-top:1px solid var(--border);
+      display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+    .page-footer-link { font-size:13px; color:var(--muted); }
+    .page-footer-link:hover { color:var(--text); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-mark">M</div>
+    Maxwell Tech Studio
+  </a>
+  <a href="https://maxwelltechstudio.com" class="back-link">← All products</a>
+</nav>
+
+<div class="page">
+
+  <div class="breadcrumb">
+    <a href="../index.html">Home</a> &nbsp;/&nbsp; Anime Power Level for Anki
+  </div>
+
+  <div class="product-hero">
+
+    <!-- Left: info -->
+    <div class="product-left">
+      <div class="product-badge">⚡ Anki Add-on</div>
+      <h1 class="product-title">Anime Power Level<br>for Anki</h1>
+      <p class="product-tagline">
+        Your Anki review sessions, transformed into a full anime RPG.
+        Earn XP, level up through 7 character forms, rack up combo multipliers,
+        and battle bosses — all in your existing Anki setup.
+      </p>
+      <div class="product-tags">
+        <span class="ptag">Windows</span>
+        <span class="ptag">macOS</span>
+        <span class="ptag">Anki 23.10+</span>
+        <span class="ptag">4 universes</span>
+      </div>
+
+      <div class="features-title">What you get</div>
+      <div class="feature-list">
+        <div class="feature-row">
+          <span class="feature-check">✓</span>
+          <span class="feature-text"><strong>4 anime universes</strong> — DBZ, Bleach, HxH, Naruto. Each with its own color scheme, button labels, particle effects, and boss lineup.</span>
+        </div>
+        <div class="feature-row">
+          <span class="feature-check">✓</span>
+          <span class="feature-text"><strong>7 character forms per universe</strong> — progress from Base Goku to Ultra Instinct as your level climbs. Real character artwork at every stage.</span>
+        </div>
+        <div class="feature-row">
+          <span class="feature-check">✓</span>
+          <span class="feature-text"><strong>XP &amp; Power Level system</strong> — Solo Leveling-inspired exponential curve. Feels genuinely earned.</span>
+        </div>
+        <div class="feature-row">
+          <span class="feature-check">✓</span>
+          <span class="feature-text"><strong>Combo multiplier</strong> — chain correct answers for up to 3.0× XP. Reset on any "again."</span>
+        </div>
+        <div class="feature-row">
+          <span class="feature-check">✓</span>
+          <span class="feature-text"><strong>Boss fight mode</strong> — full-screen battle overlay triggered after review sessions. Boss HP, shields, Ki bar, and critical hits.</span>
+        </div>
+        <div class="feature-row">
+          <span class="feature-check">✓</span>
+          <span class="feature-text"><strong>Rank system</strong> — E → D → C → B → A → S → SS → SSS. Each rank has its own glow effect.</span>
+        </div>
+        <div class="feature-row">
+          <span class="feature-check">✓</span>
+          <span class="feature-text"><strong>Daily battle log</strong> — reviewed, failed, XP earned, and best combo tracked per day. Auto-resets at midnight.</span>
+        </div>
+        <div class="feature-row">
+          <span class="feature-check">✓</span>
+          <span class="feature-text"><strong>Secret unlock</strong> — Killua Godspeed for HxH at level 60. <small>(more secrets planned)</small></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: pricing -->
+    <div class="pricing-card">
+      <div class="pricing-header">
+        <div class="pricing-label">Choose your plan</div>
+        <div class="plan-tabs">
+          <div class="plan-tab active" onclick="switchPlan('monthly', this)">Monthly</div>
+          <div class="plan-tab" onclick="switchPlan('lifetime', this)">Lifetime</div>
+        </div>
+      </div>
+
+      <div class="plan-detail active" id="plan-monthly">
+        <div class="plan-price">$5<span class="plan-price-unit">/month</span></div>
+        <div class="plan-note">Cancel anytime. No questions asked.</div>
+        <!-- Monthly variant — create a second variant in LS dashboard for $5/mo recurring -->
+        <!-- For now using same checkout URL; update MONTHLY_VARIANT_ID once created -->
+        <a href="https://maxwelltechstudio.lemonsqueezy.com/checkout/buy/e0ce8c58-3593-41db-9354-c5312a1f107e"
+           class="btn-checkout" target="_blank">
+          Subscribe — $5/mo
+        </a>
+      </div>
+
+      <div class="plan-detail" id="plan-lifetime">
+        <div class="plan-price">$100<span class="plan-price-unit"> once</span></div>
+        <div class="plan-note">All future updates included. Forever.</div>
+        <!-- Lifetime variant — update this URL once you add the $100 one-time variant in LS -->
+        <a href="https://maxwelltechstudio.lemonsqueezy.com/checkout/buy/e0ce8c58-3593-41db-9354-c5312a1f107e"
+           class="btn-checkout" target="_blank">
+          Buy Lifetime — $100
+        </a>
+      </div>
+
+      <!-- Update with your AnkiWeb add-on ID once published -->
+      <a href="https://ankiweb.net/shared/addons/"
+         class="btn-checkout outline" target="_blank">
+        ↓ Download free tier (AnkiWeb)
+      </a>
+
+      <div class="pricing-trust">
+        <div class="trust-row"><span class="trust-icon">🔒</span> Secure checkout via Lemon Squeezy</div>
+        <div class="trust-row"><span class="trust-icon">📧</span> License key emailed instantly</div>
+        <div class="trust-row"><span class="trust-icon">↩</span> 7-day refund, no questions</div>
+        <div class="trust-row"><span class="trust-icon">💻</span> Activates on up to 3 devices</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Theme swatches -->
+  <div class="preview-section">
+    <div class="preview-label">4 Universes</div>
+    <p class="preview-desc">
+      Switch between full themes in one click. Each universe has its own color palette,
+      particle engine, answer button labels, and boss roster.
+    </p>
+    <div class="preview-themes">
+      <div class="theme-swatch t-dbz">
+        <span class="sw-icon">⚡</span>Dragon Ball Z<br><small style="opacity:.6;font-size:10px">ULTRA INST.</small>
+      </div>
+      <div class="theme-swatch t-bleach">
+        <span class="sw-icon">⚔</span>Bleach<br><small style="opacity:.6;font-size:10px">MUGETSU</small>
+      </div>
+      <div class="theme-swatch t-hxh">
+        <span class="sw-icon">◎</span>Hunter × Hunter<br><small style="opacity:.6;font-size:10px">GYO</small>
+      </div>
+      <div class="theme-swatch t-naruto">
+        <span class="sw-icon">忍</span>Naruto<br><small style="opacity:.6;font-size:10px">SIX PATHS</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Free vs Premium table -->
+  <div class="compare">
+    <div class="compare-title">Free vs Premium</div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Free</th>
+          <th>Premium</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>DBZ theme</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>Bleach, HxH, Naruto themes</td><td class="no">—</td><td class="yes">✓</td></tr>
+        <tr><td>XP &amp; level system</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>Level cap</td><td class="no">20 (D-rank)</td><td class="yes">Unlimited</td></tr>
+        <tr><td>Character forms</td><td class="no">Base only</td><td class="yes">All 7 forms</td></tr>
+        <tr><td>Real character artwork</td><td class="no">—</td><td class="yes">✓</td></tr>
+        <tr><td>Boss fight mode</td><td class="no">—</td><td class="yes">✓</td></tr>
+        <tr><td>Combo XP multiplier</td><td class="no">—</td><td class="yes">✓ (up to 3.0×)</td></tr>
+        <tr><td>All ranks (up to SSS)</td><td class="no">E–D only</td><td class="yes">✓</td></tr>
+        <tr><td>Secret unlocks</td><td class="no">—</td><td class="yes">✓</td></tr>
+        <tr><td>Future updates</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-footer">
+    <a href="https://maxwelltechstudio.com" class="page-footer-link">← Maxwell Tech Studio</a>
+    <a href="mailto:hello@maxwelltechstudio.com" class="page-footer-link">hello@maxwelltechstudio.com</a>
+  </div>
+
+</div>
+
+<script>
+  function switchPlan(plan, tab) {
+    document.querySelectorAll('.plan-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.plan-detail').forEach(d => d.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('plan-' + plan).classList.add('active');
+  }
+</script>
+</body>
+</html>

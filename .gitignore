@@ -1,0 +1,10 @@
+# Never commit these
+.DS_Store
+Thumbs.db
+*.log
+
+# No secrets in the repo
+config.json
+.env
+.env.local
+secrets.json
