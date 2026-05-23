@@ -31,9 +31,14 @@
     .nav-logo-mark { width:28px; height:28px; border-radius:7px;
       background:linear-gradient(135deg,#fff,#888); display:flex;
       align-items:center; justify-content:center; font-size:13px; font-weight:800; color:#000; }
-    .back-link { margin-left:auto; font-size:13px; color:var(--muted);
-      padding:6px 12px; border-radius:6px; transition:all .15s; }
-    .back-link:hover { color:var(--text); background:rgba(255,255,255,.05); }
+    .nav-links { margin-left:auto; display:flex; align-items:center; gap:4px; }
+    .nav-link { font-size:13px; color:var(--muted); padding:6px 12px;
+      border-radius:6px; transition:all .15s; }
+    .nav-link:hover { color:var(--text); background:rgba(255,255,255,.05); }
+    .back-link { font-size:13px; color:var(--muted); padding:6px 14px;
+      border-radius:6px; border:1px solid var(--border); transition:all .15s; margin-left:8px; }
+    .back-link:hover { color:var(--text); border-color:var(--border-h); }
+    @media(max-width:600px) { .nav-link { display:none; } .back-link { margin-left:auto; } }
 
     /* Page layout */
     .page { max-width:960px; margin:0 auto; padding:100px 24px 80px; }
@@ -156,17 +161,22 @@
 <body>
 
 <nav>
-  <a href="/" class="nav-logo">
+  <a href="https://maxwelltechstudio.com" class="nav-logo">
     <div class="nav-logo-mark">M</div>
     Maxwell Tech Studio
   </a>
-  <a href="https://maxwelltechstudio.com" class="back-link">← All products</a>
+  <div class="nav-links">
+    <a href="https://maxwelltechstudio.com#products" class="nav-link">Products</a>
+    <a href="https://maxwelltechstudio.com#how-it-works" class="nav-link">How it works</a>
+    <a href="mailto:hello@maxwelltechstudio.com" class="nav-link">Contact</a>
+    <a href="https://maxwelltechstudio.com#products" class="back-link">← All products</a>
+  </div>
 </nav>
 
 <div class="page">
 
   <div class="breadcrumb">
-    <a href="../index.html">Home</a> &nbsp;/&nbsp; Anime Power Level for Anki
+    <a href="https://maxwelltechstudio.com">Home</a> &nbsp;/&nbsp; Anime Power Level for Anki
   </div>
 
   <div class="product-hero">
