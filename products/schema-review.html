@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schema Review — FSRS Note Review for Obsidian · Maxwell Tech Studio</title>
+  <meta name="description" content="Note-level spaced repetition for Obsidian using FSRS v5. Built around Justin Sung's schema learning method — review whole concepts, not flashcards.">
+  <meta property="og:title" content="Schema Review for Obsidian">
+  <meta property="og:description" content="FSRS v5 spaced repetition for Obsidian. Review whole schemas, not flashcards.">
+  <meta property="og:url" content="https://maxwelltechstudio.com/products/schema-review.html">
+  <link rel="canonical" href="https://maxwelltechstudio.com/products/schema-review.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    :root {
+      --bg:#090909; --surface:#111; --surface2:#161616;
+      --border:rgba(255,255,255,0.07); --border-h:rgba(255,255,255,0.14);
+      --text:#f0f0f0; --muted:#6b6b6b; --muted2:#444;
+      --green:#22c55e; --purple:#a78bfa; --blue:#60a5fa;
+      --radius:10px; --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    }
+    body { font-family:var(--font); background:var(--bg); color:var(--text);
+      min-height:100vh; -webkit-font-smoothing:antialiased; }
+    a { color:inherit; text-decoration:none; }
+    button { font-family:inherit; cursor:pointer; border:none; background:none; }
+
+    /* ── Nav ── */
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; height:60px;
+      display:flex; align-items:center; padding:0 24px;
+      background:rgba(9,9,9,0.85); border-bottom:1px solid var(--border);
+      backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+    .nav-logo { display:flex; align-items:center; gap:10px;
+      font-size:15px; font-weight:600; letter-spacing:-0.3px; }
+    .nav-logo-mark { width:28px; height:28px; border-radius:7px;
+      background:linear-gradient(135deg,#fff 0%,#888 100%);
+      display:flex; align-items:center; justify-content:center;
+      font-size:13px; font-weight:800; color:#000; }
+    .nav-links { display:flex; align-items:center; gap:6px; margin-left:auto; }
+    .nav-link { font-size:13px; color:var(--muted); padding:6px 12px; border-radius:6px;
+      transition:color .15s, background .15s; }
+    .nav-link:hover { color:var(--text); background:rgba(255,255,255,0.05); }
+    .nav-cta { font-size:13px; font-weight:500; padding:7px 16px; border-radius:7px;
+      background:#fff; color:#000; transition:opacity .15s, transform .15s; }
+    .nav-cta:hover { opacity:.88; transform:translateY(-1px); }
+
+    /* ── Hero ── */
+    .hero { padding:140px 24px 80px; max-width:780px; margin:0 auto;
+      text-align:center; position:relative; }
+    .hero-glow { position:absolute; top:40%; left:50%; transform:translate(-50%,-50%);
+      width:700px; height:350px; pointer-events:none;
+      background:radial-gradient(ellipse, rgba(167,139,250,0.07) 0%, transparent 70%);
+      filter:blur(50px); }
+    .back-link { display:inline-flex; align-items:center; gap:6px;
+      font-size:13px; color:var(--muted); margin-bottom:36px;
+      transition:color .15s; }
+    .back-link:hover { color:var(--text); }
+    .hero-badge { display:inline-flex; align-items:center; gap:7px;
+      font-size:12px; color:var(--muted); background:var(--surface);
+      border:1px solid var(--border); padding:5px 13px; border-radius:99px;
+      margin-bottom:28px; letter-spacing:0.3px; }
+    .badge-dot { width:6px; height:6px; border-radius:50%;
+      background:var(--green); box-shadow:0 0 8px var(--green);
+      animation:pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .hero h1 { font-size:clamp(32px,5.5vw,58px); font-weight:700;
+      line-height:1.1; letter-spacing:-2px; color:#fff; margin-bottom:20px; }
+    .hero h1 em { font-style:normal;
+      background:linear-gradient(135deg,#a78bfa 0%,#60a5fa 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text; }
+    .hero-sub { font-size:17px; color:var(--muted); line-height:1.65;
+      max-width:500px; margin:0 auto 40px; }
+    .hero-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:20px; }
+    .btn-primary { padding:13px 26px; border-radius:8px; font-size:14px; font-weight:600;
+      background:#fff; color:#000; transition:opacity .15s, transform .15s;
+      display:inline-flex; align-items:center; gap:7px; }
+    .btn-primary:hover { opacity:.88; transform:translateY(-1px); }
+    .btn-secondary { padding:13px 26px; border-radius:8px; font-size:14px; font-weight:500;
+      background:transparent; color:var(--muted); border:1px solid var(--border);
+      transition:all .15s; display:inline-flex; align-items:center; gap:7px; }
+    .btn-secondary:hover { border-color:var(--border-h); color:var(--text); background:var(--surface); }
+    .hero-note { font-size:12px; color:var(--muted2); }
+
+    /* ── Section wrapper ── */
+    .section { padding:80px 24px; max-width:1060px; margin:0 auto; }
+    .section-sm { max-width:720px; }
+    .section-label { font-size:11px; font-weight:600; letter-spacing:2px;
+      text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+    .section-title { font-size:clamp(22px,3vw,30px); font-weight:700;
+      letter-spacing:-0.7px; color:#fff; margin-bottom:10px; }
+    .section-sub { font-size:15px; color:var(--muted); line-height:1.6; }
+    .divider { width:100%; height:1px;
+      background:linear-gradient(90deg,transparent,var(--border),transparent); }
+
+    /* ── The problem ── */
+    .problem-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:36px; }
+    @media(max-width:640px) { .problem-grid { grid-template-columns:1fr; } }
+    .problem-card { padding:24px; background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius); }
+    .problem-card.bad  { border-color:rgba(239,68,68,.2); }
+    .problem-card.good { border-color:rgba(34,197,94,.2); }
+    .problem-card-label { font-size:11px; font-weight:600; letter-spacing:1.5px;
+      text-transform:uppercase; margin-bottom:14px; }
+    .problem-card.bad  .problem-card-label { color:rgba(239,68,68,.7); }
+    .problem-card.good .problem-card-label { color:rgba(34,197,94,.7); }
+    .problem-card ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .problem-card li { font-size:13px; color:var(--muted); line-height:1.5;
+      display:flex; gap:10px; align-items:flex-start; }
+    .problem-card li::before { flex-shrink:0; margin-top:1px; }
+    .problem-card.bad  li::before { content:'✗'; color:rgba(239,68,68,.6); }
+    .problem-card.good li::before { content:'✓'; color:var(--green); }
+
+    /* ── How it works ── */
+    .flow { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:12px; margin-top:36px; }
+    .flow-step { background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius); padding:24px; position:relative; }
+    .flow-num { font-size:11px; font-weight:700; color:var(--muted);
+      letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; }
+    .flow-title { font-size:15px; font-weight:600; color:#fff; margin-bottom:6px; }
+    .flow-desc  { font-size:13px; color:var(--muted); line-height:1.6; }
+    .flow-arrow { position:absolute; right:-8px; top:50%;
+      transform:translateY(-50%); color:var(--muted2); font-size:16px;
+      display:none; }
+    @media(min-width:900px) { .flow-arrow { display:block; } }
+
+    /* ── Demo mockup ── */
+    .demo-wrap { margin-top:40px; border:1px solid var(--border);
+      border-radius:14px; overflow:hidden;
+      box-shadow:0 20px 60px rgba(0,0,0,.5); }
+    .demo-bar { background:var(--surface2); padding:12px 16px;
+      display:flex; align-items:center; gap:8px;
+      border-bottom:1px solid var(--border); }
+    .demo-dot { width:10px; height:10px; border-radius:50%; }
+    .demo-title-bar { font-size:12px; color:var(--muted); margin:0 auto; }
+    .demo-body { background:#1e1e2e; padding:28px 32px; }
+    .demo-modal-title { font-size:1em; font-weight:700; color:#89b4fa;
+      border-bottom:1px solid #45475a; padding-bottom:12px; margin-bottom:16px; }
+    .demo-note-name { font-size:1.15em; font-weight:700; color:#cdd6f4; margin-bottom:6px; }
+    .demo-badges { display:flex; gap:8px; margin-bottom:16px; }
+    .demo-badge { font-size:11px; font-weight:600; padding:2px 10px; border-radius:99px; }
+    .demo-badge-blue  { background:rgba(137,180,250,.15); color:#89b4fa; }
+    .demo-badge-mauve { background:rgba(203,166,247,.15); color:#cba6f7; }
+    .demo-prompt { font-size:13px; color:#a6adc8; line-height:1.6; margin-bottom:10px; }
+    .demo-checklist { list-style:none; font-size:12px; color:#6c7086;
+      margin:0 0 18px 12px; line-height:2; }
+    .demo-mode-row { display:flex; gap:10px; margin-bottom:20px; }
+    .demo-btn { padding:9px 16px; border-radius:8px; font-size:12px; font-weight:600;
+      cursor:default; flex:1; text-align:center; }
+    .demo-btn-mode { background:#313244; color:#a6adc8; border:1.5px solid #45475a; }
+    .demo-btn-mode.active { background:rgba(137,180,250,.12); color:#89b4fa; border-color:#89b4fa; }
+    .demo-footer { display:flex; gap:10px; padding-top:14px;
+      border-top:1px solid #313244; align-items:center; }
+    .demo-btn-primary { background:#89b4fa; color:#1e1e2e; padding:9px 18px;
+      border-radius:8px; font-size:12px; font-weight:700; opacity:.5; }
+    .demo-btn-ghost { font-size:11px; color:#6c7086; padding:6px 10px; }
+    .demo-grade-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px; }
+    .demo-grade-card { padding:14px 16px; border-radius:10px; cursor:default; }
+    .demo-g1 { background:rgba(243,139,168,.08); border:1.5px solid rgba(243,139,168,.4); }
+    .demo-g2 { background:rgba(250,179,135,.08); border:1.5px solid rgba(250,179,135,.4); }
+    .demo-g3 { background:rgba(166,227,161,.08); border:1.5px solid rgba(166,227,161,.4); }
+    .demo-g4 { background:rgba(249,226,175,.08); border:1.5px solid rgba(249,226,175,.4); }
+    .demo-grade-icon { font-size:1.4em; display:block; margin-bottom:4px; }
+    .demo-grade-label { font-size:13px; font-weight:700; color:#cdd6f4; display:block; }
+    .demo-grade-desc  { font-size:11px; color:#6c7086; display:block; line-height:1.4; margin-top:2px; }
+    .demo-grade-next  { font-size:11px; color:#45475a; display:block; margin-top:6px; font-weight:600; }
+    .demo-tabs { display:flex; gap:8px; margin-bottom:20px; }
+    .demo-tab { padding:5px 14px; border-radius:6px; font-size:12px; font-weight:600;
+      cursor:pointer; border:1px solid var(--border); color:var(--muted); }
+    .demo-tab.active { background:rgba(167,139,250,.12); border-color:#a78bfa; color:#a78bfa; }
+
+    /* ── Pricing ── */
+    .pricing-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:40px; }
+    @media(max-width:640px) { .pricing-grid { grid-template-columns:1fr; } }
+    .pricing-card { background:var(--surface); border:1px solid var(--border);
+      border-radius:14px; padding:28px; display:flex; flex-direction:column; gap:20px; }
+    .pricing-card.featured { border-color:rgba(167,139,250,.4);
+      background:linear-gradient(180deg, rgba(167,139,250,.05) 0%, var(--surface) 100%); }
+    .pricing-top { display:flex; flex-direction:column; gap:6px; }
+    .pricing-tier { font-size:12px; font-weight:600; letter-spacing:1.5px;
+      text-transform:uppercase; color:var(--muted); }
+    .pricing-card.featured .pricing-tier { color:#a78bfa; }
+    .pricing-price { font-size:36px; font-weight:700; color:#fff; letter-spacing:-1.5px; }
+    .pricing-price sub { font-size:14px; font-weight:400; color:var(--muted); letter-spacing:0; }
+    .pricing-price-alt { font-size:13px; color:var(--muted); margin-top:2px; }
+    .pricing-desc { font-size:13px; color:var(--muted); line-height:1.6; }
+    .pricing-feats { display:flex; flex-direction:column; gap:10px; }
+    .pricing-feat { display:flex; align-items:flex-start; gap:10px;
+      font-size:13px; color:var(--muted); line-height:1.5; }
+    .feat-check { flex-shrink:0; color:var(--green); margin-top:1px; }
+    .feat-check.muted { color:var(--muted2); }
+    .pricing-cta { padding:13px; border-radius:8px; font-size:14px; font-weight:600;
+      text-align:center; transition:opacity .15s, transform .15s; }
+    .pricing-cta.solid { background:#fff; color:#000; }
+    .pricing-cta.solid:hover { opacity:.88; transform:translateY(-1px); }
+    .pricing-cta.outline { border:1px solid var(--border); color:var(--muted); }
+    .pricing-cta.outline:hover { border-color:var(--border-h); color:var(--text); }
+    .pricing-cta.purple { background:#a78bfa; color:#0a0a14; }
+    .pricing-cta.purple:hover { opacity:.9; transform:translateY(-1px); }
+
+    /* ── Feature table ── */
+    .feat-table { width:100%; border-collapse:collapse; margin-top:36px; font-size:13px; }
+    .feat-table th { text-align:left; padding:10px 16px; color:var(--muted);
+      font-weight:600; font-size:12px; letter-spacing:0.5px;
+      border-bottom:1px solid var(--border); }
+    .feat-table th:not(:first-child) { text-align:center; }
+    .feat-table td { padding:14px 16px; border-bottom:1px solid var(--border);
+      color:var(--muted); vertical-align:top; }
+    .feat-table td:not(:first-child) { text-align:center; }
+    .feat-table tr:last-child td { border-bottom:none; }
+    .feat-table .feat-name { color:var(--text); font-weight:500; }
+    .feat-table .feat-sub  { font-size:11px; color:var(--muted2); margin-top:2px; }
+    .feat-table .yes { color:var(--green); font-size:15px; }
+    .feat-table .no  { color:var(--muted2); font-size:15px; }
+    .feat-table .tier-head { font-size:13px; font-weight:700; color:#fff; }
+    .feat-table .tier-head.purple { color:#a78bfa; }
+
+    /* ── FAQ ── */
+    .faq { display:flex; flex-direction:column; gap:2px; margin-top:32px; }
+    .faq-item { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+    .faq-q { width:100%; text-align:left; padding:18px 20px;
+      font-size:14px; font-weight:500; color:var(--text);
+      display:flex; justify-content:space-between; align-items:center;
+      cursor:pointer; background:var(--surface); transition:background .15s; }
+    .faq-q:hover { background:var(--surface2); }
+    .chevron { font-size:12px; color:var(--muted); transition:transform .2s; }
+    .faq-item.open .chevron { transform:rotate(180deg); }
+    .faq-a { font-size:13px; color:var(--muted); line-height:1.7;
+      max-height:0; overflow:hidden; transition:max-height .25s ease, padding .2s;
+      padding:0 20px; background:var(--surface); }
+    .faq-item.open .faq-a { max-height:300px; padding:0 20px 18px; }
+
+    /* ── Footer ── */
+    .site-footer { padding:48px 24px; border-top:1px solid var(--border);
+      max-width:1060px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:16px; }
+    .footer-logo { font-size:14px; font-weight:600; color:var(--muted);
+      display:flex; align-items:center; gap:8px; }
+    .footer-logo-mark { width:22px; height:22px; border-radius:5px;
+      background:linear-gradient(135deg,#fff 0%,#666 100%);
+      display:flex; align-items:center; justify-content:center;
+      font-size:10px; font-weight:800; color:#000; }
+    .footer-links { display:flex; gap:20px; }
+    .footer-link { font-size:13px; color:var(--muted); transition:color .15s; }
+    .footer-link:hover { color:var(--text); }
+    .footer-copy { font-size:12px; color:var(--muted2); }
+
+    @media(max-width:600px) {
+      nav { padding:0 16px; }
+      .nav-links .nav-link { display:none; }
+      .section { padding:60px 16px; }
+      .demo-body { padding:20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-mark">M</div>
+    Maxwell Tech Studio
+  </a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">← All products</a>
+    <a href="#pricing" class="nav-link">Pricing</a>
+    <a href="#faq" class="nav-link">FAQ</a>
+    <a href="https://maxwelltechstudio.lemonsqueezy.com/checkout/buy/32e76072-fc75-4d1d-a8b7-c509bf6a22e9" class="nav-cta">Get it free</a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <a href="/" class="back-link">← Back to all products</a>
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Obsidian · FSRS v5 · Free tier available
+  </div>
+  <h1>Review whole schemas,<br>not <em>flashcards.</em></h1>
+  <p class="hero-sub">
+    FSRS v5 spaced repetition built for Obsidian — designed around
+    how high performers actually learn: schema-first, free recall,
+    Feynman technique.
+  </p>
+  <div class="hero-actions">
+    <a href="#pricing" class="btn-primary">Download free →</a>
+    <a href="#how-it-works" class="btn-secondary">See how it works</a>
+  </div>
+  <p class="hero-note">Free tier · No account required · Runs 100% locally in Obsidian</p>
+</div>
+
+<div class="divider" style="max-width:1060px;margin:0 auto"></div>
+
+<!-- ── The Problem ── -->
+<section class="section section-sm">
+  <div class="section-label">The problem</div>
+  <div class="section-title">Anki reviews concepts. Schema Review reviews understanding.</div>
+  <p class="section-sub">Flashcards test whether you recognize an answer. This tests whether you can reconstruct the whole mental model from nothing.</p>
+
+  <div class="problem-grid">
+    <div class="problem-card bad">
+      <div class="problem-card-label">Flashcard-only approach</div>
+      <ul>
+        <li>Cued recall — the question is already half the answer</li>
+        <li>Reviews isolated facts, not connected schemas</li>
+        <li>Easy to pass cards while not understanding the concept</li>
+        <li>No signal on whether you could actually explain it</li>
+      </ul>
+    </div>
+    <div class="problem-card good">
+      <div class="problem-card-label">Schema Review approach</div>
+      <ul>
+        <li>Free recall — reconstruct everything from a blank slate</li>
+        <li>Reviews the whole concept: mechanisms, connections, applications</li>
+        <li>Feynman grading — if you can't teach it, you don't know it</li>
+        <li>FSRS v5 schedules the next review based on actual retention</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider" style="max-width:1060px;margin:0 auto"></div>
+
+<!-- ── How it works ── -->
+<section class="section" id="how-it-works">
+  <div class="section-label">How it works</div>
+  <div class="section-title">Four steps, every review session</div>
+  <p class="section-sub">Runs entirely inside Obsidian. No external apps, no accounts, no internet required.</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-arrow">→</div>
+      <div class="flow-num">Step 01</div>
+      <div class="flow-title">Note opens</div>
+      <div class="flow-desc">Your overdue note surfaces automatically. Glance at it — then look away.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-arrow">→</div>
+      <div class="flow-num">Step 02</div>
+      <div class="flow-title">Free recall</div>
+      <div class="flow-desc">Reconstruct the full schema from memory. Type it out or say it out loud with the built-in timer.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-arrow">→</div>
+      <div class="flow-num">Step 03</div>
+      <div class="flow-title">Grade yourself</div>
+      <div class="flow-desc">Four grades: Forgot / Hard / Good / Easy. Honest self-assessment is the whole signal.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">Step 04</div>
+      <div class="flow-title">FSRS schedules next</div>
+      <div class="flow-desc">The algorithm calculates your next review date based on your stability and difficulty for that specific concept.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider" style="max-width:1060px;margin:0 auto"></div>
+
+<!-- ── Demo mockup ── -->
+<section class="section" id="demo">
+  <div class="section-label">Preview</div>
+  <div class="section-title">What you actually see inside Obsidian</div>
+  <p class="section-sub">Click between the two phases to see the full review flow.</p>
+
+  <div style="margin-top:32px">
+    <div class="demo-tabs">
+      <button class="demo-tab active" onclick="switchTab('recall', this)">Phase 1 — Recall</button>
+      <button class="demo-tab" onclick="switchTab('grade', this)">Phase 2 — Grade</button>
+    </div>
+
+    <div class="demo-wrap">
+      <div class="demo-bar">
+        <div class="demo-dot" style="background:#ff5f57"></div>
+        <div class="demo-dot" style="background:#febc2e"></div>
+        <div class="demo-dot" style="background:#28c840"></div>
+        <div class="demo-title-bar">Obsidian</div>
+      </div>
+
+      <!-- Recall phase -->
+      <div class="demo-body" id="tab-recall">
+        <div class="demo-modal-title">📚 Schema Recall</div>
+        <div class="demo-note-name">Structural Chromosome Abnormalities</div>
+        <div class="demo-badges">
+          <span class="demo-badge demo-badge-blue">Genetics</span>
+          <span class="demo-badge demo-badge-mauve">Medical Journey</span>
+        </div>
+        <p class="demo-prompt">🧠 Look away. Reconstruct the full schema from memory:</p>
+        <ul class="demo-checklist">
+          <li>• Big picture — what IS this concept?</li>
+          <li>• All core mechanisms / components</li>
+          <li>• How they connect (relationships)</li>
+          <li>• Clinical applications</li>
+        </ul>
+        <p style="font-size:12px;color:#6c7086;margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Choose your recall method:</p>
+        <div class="demo-mode-row">
+          <div class="demo-btn demo-btn-mode">✍️ Type it out</div>
+          <div class="demo-btn demo-btn-mode active">🎙️ Say it out loud</div>
+        </div>
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="font-size:2.4em;font-weight:700;color:#94e2d5;letter-spacing:.05em;font-variant-numeric:tabular-nums">1:24</div>
+          <div class="demo-btn demo-btn-mode" style="max-width:120px;margin:8px auto 0">⏸ Pause</div>
+        </div>
+        <div class="demo-footer">
+          <div class="demo-btn demo-btn-primary">Grade My Recall →</div>
+          <div class="demo-btn-ghost">Skip</div>
+          <div class="demo-btn-ghost">End Session</div>
+        </div>
+      </div>
+
+      <!-- Grade phase -->
+      <div class="demo-body" id="tab-grade" style="display:none">
+        <div class="demo-modal-title">📊 Grade Your Recall</div>
+        <div class="demo-note-name" style="margin-bottom:8px">Structural Chromosome Abnormalities</div>
+        <p class="demo-prompt">How completely did you reconstruct the schema? (or press 1–4)</p>
+        <div class="demo-grade-grid">
+          <div class="demo-grade-card demo-g1">
+            <span class="demo-grade-icon">❌</span>
+            <span class="demo-grade-label">Forgot</span>
+            <span class="demo-grade-desc">Couldn't reconstruct the schema</span>
+            <span class="demo-grade-next">Next: 1d</span>
+          </div>
+          <div class="demo-grade-card demo-g2">
+            <span class="demo-grade-icon">😓</span>
+            <span class="demo-grade-label">Hard</span>
+            <span class="demo-grade-desc">Got skeleton, missing key connections</span>
+            <span class="demo-grade-next">Next: 1d</span>
+          </div>
+          <div class="demo-grade-card demo-g3">
+            <span class="demo-grade-icon">✅</span>
+            <span class="demo-grade-label">Good</span>
+            <span class="demo-grade-desc">Recalled schema + most connections</span>
+            <span class="demo-grade-next">Next: 3d</span>
+          </div>
+          <div class="demo-grade-card demo-g4">
+            <span class="demo-grade-icon">⭐</span>
+            <span class="demo-grade-label">Easy</span>
+            <span class="demo-grade-desc">Feynman-level — could teach it</span>
+            <span class="demo-grade-next">Next: 15d</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider" style="max-width:1060px;margin:0 auto"></div>
+
+<!-- ── Pricing ── -->
+<section class="section section-sm" id="pricing">
+  <div class="section-label">Pricing</div>
+  <div class="section-title">Start free. Upgrade when you're ready.</div>
+  <p class="section-sub">The free tier is fully usable — no crippled core features. Premium adds the tools that serious students need.</p>
+
+  <div class="pricing-grid">
+    <!-- Free -->
+    <div class="pricing-card">
+      <div class="pricing-top">
+        <div class="pricing-tier">Free</div>
+        <div class="pricing-price">$0</div>
+        <div class="pricing-desc">Everything you need to get started with schema-level spaced repetition.</div>
+      </div>
+      <div class="pricing-feats">
+        <div class="pricing-feat"><span class="feat-check">✓</span>FSRS v5 scheduling algorithm</div>
+        <div class="pricing-feat"><span class="feat-check">✓</span>Text recall mode</div>
+        <div class="pricing-feat"><span class="feat-check">✓</span>4-grade self-assessment</div>
+        <div class="pricing-feat"><span class="feat-check">✓</span>Review dashboard (Dataview)</div>
+        <div class="pricing-feat"><span class="feat-check">✓</span>Enroll any note manually</div>
+        <div class="pricing-feat"><span class="feat-check">✓</span>Auto-enroll from learning template</div>
+        <div class="pricing-feat"><span class="feat-check muted">–</span><span style="color:var(--muted2)">Verbal recall + timer</span></div>
+        <div class="pricing-feat"><span class="feat-check muted">–</span><span style="color:var(--muted2)">Analytics &amp; streak tracking</span></div>
+        <div class="pricing-feat"><span class="feat-check muted">–</span><span style="color:var(--muted2)">Session summary report</span></div>
+      </div>
+      <a href="https://maxwelltechstudio.lemonsqueezy.com/checkout/buy/32e76072-fc75-4d1d-a8b7-c509bf6a22e9" class="pricing-cta outline">Download free →</a>
+    </div>
+
+    <!-- Premium -->
+    <div class="pricing-card featured">
+      <div class="pricing-top">
+        <div class="pricing-tier">Premium</div>
+        <div class="pricing-price">$4<sub>/mo</sub></div>
+        <div class="pricing-price-alt">or $29 lifetime — all future updates included</div>
+        <div class="pricing-desc">For students who want the full system: verbal recall, analytics, and everything that ships next.</div>
+      </div>
+      <div class="pricing-feats">
+        <div class="pricing-feat"><span class="feat-check">✓</span>Everything in Free</div>
+        <div class="pricing-feat"><span class="feat-check">✓</span>🎙️ Verbal recall with live timer</div>
+        <div class="pricing-feat"><span class="feat-check">✓</span>📊 Retention rate analytics</div>
+        <div class="pricing-feat"><span class="feat-check">✓</span>🔥 Streak tracking</div>
+        <div class="pricing-feat"><span class="feat-check">✓</span>📋 Session summary after each review</div>
+        <div class="pricing-feat"><span class="feat-check">✓</span>Priority support + all future updates</div>
+      </div>
+      <a href="https://maxwelltechstudio.lemonsqueezy.com/checkout/buy/a0fa23ed-c07f-4ed2-9b5f-a68f98f8b52e" class="pricing-cta purple">Get lifetime — $29 →</a>
+      <a href="https://maxwelltechstudio.lemonsqueezy.com/checkout/buy/ff9390cc-8280-4ffc-a786-5fa374260a9a?enabled=1696168" class="pricing-cta outline" style="text-align:center;margin-top:6px;font-size:13px;">Monthly — $4/mo →</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider" style="max-width:1060px;margin:0 auto"></div>
+
+<!-- ── FAQ ── -->
+<section class="section section-sm" id="faq">
+  <div class="section-label">FAQ</div>
+  <div class="section-title">Common questions</div>
+  <div class="faq">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Does this replace Anki?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-a">
+        No — it complements it. Anki is great for drilling isolated facts (Layer 3–4 learning). Schema Review works at the schema layer (Layer 1–2) — reviewing whether you understand the whole concept, not just whether you can recall a specific answer. Most power users run both.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Does it require any specific Obsidian plugins?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-a">
+        You need QuickAdd (free, community plugin) to run the review scripts, and Dataview (free) for the review dashboard. Both are among the most popular Obsidian plugins and take about 2 minutes to install.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What is FSRS v5 and why does it matter?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-a">
+        FSRS (Free Spaced Repetition Scheduler) v5 is the most accurate open-source spaced repetition algorithm available — significantly more precise than the SM-2 algorithm that most Anki users still use. It models each concept's stability and difficulty independently, so intervals grow naturally based on how well you actually know each specific thing.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Does my data leave my computer?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-a">
+        Never. Everything runs as a local JavaScript script inside Obsidian. Review history is stored as frontmatter in your own notes. Nothing is sent to any server.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Can I get a refund?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-a">
+        Yes — 7-day no-questions-asked refund. Email hello@maxwelltechstudio.com and I'll process it same day.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<div class="divider" style="max-width:1060px;margin:0 auto"></div>
+<footer class="site-footer">
+  <a href="/" class="footer-logo">
+    <div class="footer-logo-mark">M</div>
+    Maxwell Tech Studio
+  </a>
+  <div class="footer-links">
+    <a href="/" class="footer-link">Products</a>
+    <a href="#faq" class="footer-link">FAQ</a>
+    <a href="mailto:hello@maxwelltechstudio.com" class="footer-link">Contact</a>
+  </div>
+  <div class="footer-copy">© 2026 Maxwell Tech Studio. All rights reserved.</div>
+</footer>
+
+<script>
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-recall').style.display = tab === 'recall' ? '' : 'none';
+    document.getElementById('tab-grade').style.display  = tab === 'grade'  ? '' : 'none';
+  }
+</script>
+</body>
+</html>

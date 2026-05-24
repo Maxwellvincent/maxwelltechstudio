@@ -390,8 +390,8 @@
   <div class="filter-row" style="margin-top:28px">
     <button class="filter-btn active" onclick="filterProducts('all', this)">All</button>
     <button class="filter-btn" onclick="filterProducts('anki', this)">Anki</button>
+    <button class="filter-btn" onclick="filterProducts('obsidian', this)">Obsidian</button>
     <button class="filter-btn" onclick="filterProducts('productivity', this)">Productivity</button>
-    <button class="filter-btn" onclick="filterProducts('health', this)">Health</button>
   </div>
 
   <div class="product-grid" id="product-grid">
@@ -450,23 +450,36 @@
       </div>
     </div>
 
-    <!-- ── Placeholder 3 ── -->
-    <div class="product-card coming-soon" data-category="health">
+    <!-- ── Product 3: Schema Review ── -->
+    <div class="product-card" data-category="obsidian">
       <div class="card-top">
-        <div class="card-icon">💊</div>
-        <div class="card-tags"><span class="tag soon">Coming soon</span></div>
+        <div class="card-icon">🧠</div>
+        <div class="card-tags">
+          <span class="tag" style="border-color:rgba(167,139,250,.3);color:rgba(167,139,250,.9)">Obsidian</span>
+          <span class="tag new">New</span>
+        </div>
       </div>
       <div>
-        <div class="card-name">Something for med students</div>
+        <div class="card-name">Schema Review for Obsidian</div>
         <div class="card-desc" style="margin-top:6px">
-          Built for the grind of medical school. Details coming soon.
+          FSRS v5 spaced repetition for your Obsidian notes — review whole schemas,
+          not flashcards. Built around free recall and the Feynman technique.
+          Runs 100% locally, no accounts needed.
         </div>
+      </div>
+      <div class="card-features">
+        <span class="feature-chip">FSRS v5</span>
+        <span class="feature-chip">Free recall</span>
+        <span class="feature-chip">Verbal + text</span>
+        <span class="feature-chip">Review dashboard</span>
+        <span class="feature-chip">100% local</span>
       </div>
       <div class="card-footer">
         <div class="card-price">
-          <span class="price-main" style="font-size:14px;color:var(--muted)">TBA</span>
+          <span class="price-main">$4<span style="font-size:13px;font-weight:400;color:var(--muted)">/mo</span></span>
+          <span class="price-sub">or $29 lifetime · free tier available</span>
         </div>
-        <span class="card-cta outline">Notify me</span>
+        <a href="https://maxwelltechstudio.com/products/schema-review.html" class="card-cta">Get it →</a>
       </div>
     </div>
 
